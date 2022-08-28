@@ -5,6 +5,7 @@
 body{
     background-color: rgb(202, 210, 218) !important;
 }
+
 .add__new__btn__mobile__only{
     position: fixed;
     bottom: 0;
