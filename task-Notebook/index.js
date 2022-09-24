@@ -10,7 +10,7 @@ const taskContainer = document.querySelector(".task_contents");
 const taskModal = document.querySelector(".task_modal_body");
 
 const htmlTaskContents = ({ id, title, description, type, url }) => {
-  console.log(id);
+  // console.log(id);
   return `
        <div class ="col-md-6 col-lg-4 mt-3" id=${id} key=${id}>
             <div class="card shadow-sm task__card">
@@ -19,17 +19,16 @@ const htmlTaskContents = ({ id, title, description, type, url }) => {
                         <i class="fas fa-pencil-alt" name=${id}></i>
                     </button>
                     <button type="button" class="btn btn-outline-danger mr-2 name="${id}" onclick='deleteTask.apply(this,arguments)'>
-                        <i class="fas fa-trash-alt"  name=${id}></i>
+                        <i class="fas fa-trash-alt"   name=${id}></i>
                     </button>
                 </div>
                 <div class="card-body">
-                ${
-                  url
+                ${url
                     ? `<img width='100%' height='150px' style="object-fit: cover; object-position: center"  src=${url} alt='card image cap' class='card-image-top md-3 rounded-lg' />`
-                    : `
-              <img width='100%' height='150px' style="object-fit: cover; object-position: center" src="https://reactnativecode.com/wp-content/uploads/2018/02/Default_Image_Thumbnail.png" alt='card image cap' class='img-fluid place__holder__image mb-3' />
-              `
-                }
+                   : `
+                     <img width='100%' height='150px' style="object-fit: cover; object-position: center" src="https://reactnativecode.com/wp-content/uploads/2018/02/Default_Image_Thumbnail.png" alt='card image cap' class='img-fluid place__holder__image mb-3' />
+                    `
+    }
                 <h4 calss="task__card__title">${title}</h4>
                     <p calss="description trim-3-lines text-muted" data-gram_editor = "false">${description}</p>
                 <div calss="tags text-white d-flex flex-wrap">
@@ -48,12 +47,11 @@ const htmlModalContent = ({ id, title, description, url }) => {
   const date = new Date(parseInt(id));
   return `
     <div id=${id}>
-    ${
-      url
-        ? `
+    ${url
+      ? `
         <img width='100%' src=${url} alt='card image cap' class='img-fluid place__holder__image mb-3' />
       `
-        : `
+      : `
       <img width='100%' src="https://reactnativecode.com/wp-content/uploads/2018/02/Default_Image_Thumbnail.png" alt='card image cap' class='img-fluid place__holder__image mb-3' />
       `
     }
@@ -123,8 +121,8 @@ const deleteTask = (e) => {
   const type = e.target.tagName;
   const removeTask = state.tasklist.filter(({ id }) => id !== targetID);
   state.tasklist = removeTask;
-
   updatelocalStorage();
+
   if (type === "BUTTON") {
     return e.target.parentNode.parentNode.parentNode.parentNode.removeChild(
       e.target.parentNode.parentNode.parentNode
@@ -208,3 +206,19 @@ const saveEdit = (e) => {
   submitButton.setAttribute("data-bs-target", "#showTask");
   submitButton.innerHTML = "Open Task";
 };
+
+const searchTask = (e) => {
+  if (!e) e = window.event;
+  while (taskContainer.firstChild) {
+    taskContainer.removeChild(taskContainer.firstChild);
+
+  }
+  const resultData = state.tasklist.filter(({ title }) => {
+    return title.toLowerCase().includes(e.target.value.toLowerCase());
+  })
+  // console.log(resultData);
+
+  resultData.map((cardData) => {
+    taskContainer.insertAdjacentHTML("beforeend", htmlTaskContents(cardData))
+  });
+}
